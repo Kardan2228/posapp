@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { useState } from 'react';
+import PosScreen from './src/screens/pos/PosScreen';
 
 type ScreenType = 'pos' | 'inventory' | 'reports';
 
@@ -10,13 +11,13 @@ export default function App() {
   const renderScreen = () => {
     switch (currentScreen) {
       case 'pos':
-        return <Text style={styles.title}>Punto de Venta</Text>;
+        return <PosScreen />;
       case 'inventory':
         return <Text style={styles.title}>Inventario</Text>;
       case 'reports':
         return <Text style={styles.title}>Reportes</Text>;
       default:
-        return <Text style={styles.title}>Punto de Venta</Text>;
+        return <PosScreen />;
     }
   };
 

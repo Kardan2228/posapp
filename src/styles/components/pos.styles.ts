@@ -156,4 +156,23 @@ export const posScreenStyles = StyleSheet.create({
       padding: spacing.sm,
       fontSize: 16,
     },
+    categoryContainer: {
+        backgroundColor: colors.background.paper,
+        paddingHorizontal: spacing.sm,
+      },
+      categoryTab: {
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.sm,
+        marginRight: spacing.sm,
+        borderBottomWidth: 2,
+        borderBottomColor: 'transparent',
+      },
+      categoryTabSelected: {
+        borderBottomColor: colors.primary.main,
+      },
+      categoryText: {
+        ...typography.body1,
+        color: colors.text.secondary,
+        fontWeight: '500',
+      },
   });

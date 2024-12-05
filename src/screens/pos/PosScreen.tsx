@@ -1,22 +1,32 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import SearchBar from '../../components/pos/SearchBar';
+import CategoryTabs from '../../components/pos/CategoryTabs';
 import ProductGrid from '../../components/pos/ProductGrid';
 import Cart from '../../components/pos/Cart';
-import { Product, CartItem } from '../../types';
+import { Product, CartItem, Category} from '../../types';
 import { posScreenStyles as styles } from '../../styles/components/pos.styles';
 
 // Datos de ejemplo
+
+const sampleCategories: Category[] = [
+    { id: 'bebidas', name: 'Bebidas' },
+    { id: 'snacks', name: 'Snacks' },
+    { id: 'pan', name: 'Panadería' },
+    { id: 'lacteos', name: 'Lácteos' },
+  ];
+
 const sampleProducts: Product[] = [
-  { id: '1', name: 'Coca Cola 600ml', price: 18, stock: 24 },
-  { id: '2', name: 'Sabritas', price: 15, stock: 15 },
-  { id: '3', name: 'Pan Bimbo', price: 45, stock: 8 },
-  { id: '4', name: 'Leche 1L', price: 26, stock: 12 },
+  { id: '1', name: 'Coca Cola 600ml', price: 18, stock: 24, categoryId: 'bebidas' },
+  { id: '2', name: 'Sabritas', price: 15, stock: 15, categoryId: 'snacks' },
+  { id: '3', name: 'Pan Bimbo', price: 45, stock: 8, categoryId: 'pan' },
+  { id: '4', name: 'Leche 1L', price: 26, stock: 12, categoryId: 'lacteos' },
 ];
 
 const PosScreen: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const handleProductPress = (product: Product) => {
     setCartItems(prevItems => {
@@ -50,6 +60,7 @@ const PosScreen: React.FC = () => {
   };
 
   const filteredProducts = sampleProducts.filter(product =>
+    (!selectedCategory || product.categoryId === selectedCategory) &&
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -59,6 +70,11 @@ const PosScreen: React.FC = () => {
         <SearchBar
           value={searchQuery}
           onChangeText={setSearchQuery}
+        />
+        <CategoryTabs
+          categories={sampleCategories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
         />
         <ProductGrid 
           products={filteredProducts}

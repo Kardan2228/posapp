@@ -176,3 +176,52 @@ export const posScreenStyles = StyleSheet.create({
         fontWeight: '500',
       },
   });
+
+  export const modalStyles = StyleSheet.create({
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContent: {
+      backgroundColor: colors.background.paper,
+      borderRadius: spacing.md,
+      padding: spacing.lg,
+      width: '80%',
+      maxWidth: 400,
+    },
+    modalTitle: {
+      ...typography.h2,
+      textAlign: 'center',
+      marginBottom: spacing.md,
+    },
+    modalTotal: {
+      ...typography.h1,
+      textAlign: 'center',
+      color: colors.primary.main,
+      marginBottom: spacing.lg,
+    },
+    modalButtons: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      gap: spacing.md,
+    },
+    modalButton: {
+      flex: 1,
+      padding: spacing.md,
+      borderRadius: spacing.sm,
+      alignItems: 'center',
+    },
+    modalButtonCancel: {
+      backgroundColor: colors.background.default,
+    },
+    modalButtonConfirm: {
+      backgroundColor: colors.primary.main,
+    },
+    modalButtonText: {
+      ...typography.body1,
+      fontWeight: '600',
+      color: colors.text.primary,
+    }
+  });

@@ -100,6 +100,26 @@ export const cartStyles = StyleSheet.create({
       color: colors.background.paper,
       ...typography.h2,
     },
+    searchContainer: {
+  padding: spacing.sm,
+  borderBottomWidth: 1,
+  borderBottomColor: colors.background.default,
+},
+searchWrapper: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: colors.background.default,
+  borderRadius: spacing.sm,
+  paddingHorizontal: spacing.sm,
+},
+searchIcon: {
+  marginRight: spacing.sm,
+},
+searchInput: {
+  flex: 1,
+  padding: spacing.sm,
+  fontSize: 16,
+},
   });
 export const posScreenStyles = StyleSheet.create({
     container: {
@@ -112,5 +132,28 @@ export const posScreenStyles = StyleSheet.create({
     },
     cartSection: {
       flex: 1,
+    },
+  });
+
+  export const searchStyles = StyleSheet.create({
+    searchContainer: {
+      padding: spacing.sm,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.background.default,
+    },
+    searchWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.background.default,
+      borderRadius: spacing.sm,
+      paddingHorizontal: spacing.sm,
+    },
+    searchIcon: {
+      marginRight: spacing.sm,
+    },
+    searchInput: {
+      flex: 1,
+      padding: spacing.sm,
+      fontSize: 16,
     },
   });

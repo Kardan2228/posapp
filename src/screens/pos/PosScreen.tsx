@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
+import SearchBar from '../../components/pos/SearchBar';
 import ProductGrid from '../../components/pos/ProductGrid';
 import Cart from '../../components/pos/Cart';
 import { Product, CartItem } from '../../types';
@@ -15,6 +16,7 @@ const sampleProducts: Product[] = [
 
 const PosScreen: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleProductPress = (product: Product) => {
     setCartItems(prevItems => {
@@ -47,11 +49,19 @@ const PosScreen: React.FC = () => {
     setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
   };
 
+  const filteredProducts = sampleProducts.filter(product =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.productsSection}>
+        <SearchBar
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
         <ProductGrid 
-          products={sampleProducts}
+          products={filteredProducts}
           onProductPress={handleProductPress}
         />
       </View>

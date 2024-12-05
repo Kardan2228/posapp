@@ -8,14 +8,15 @@ interface CartProps {
     items: CartItem[];
     onUpdateQuantity: (item: CartItem, change: number) => void;
     onRemoveItem: (itemId: string) => void;
+    onSale: (items: CartItem[]) => void;
    }
    
-   const Cart: React.FC<CartProps> = ({ items, onUpdateQuantity, onRemoveItem }) => {
+   const Cart: React.FC<CartProps> = ({ items, onUpdateQuantity, onRemoveItem, onSale }) => {
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-   
+  
     const handlePayment = () => {
-      // Aquí iría la lógica de cobro
+      onSale(items);
       setShowPaymentModal(false);
     };
    

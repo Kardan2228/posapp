@@ -27,6 +27,7 @@ const PosScreen: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [products, setProducts] = useState(sampleProducts);
 
   const handleProductPress = (product: Product) => {
     setCartItems(prevItems => {
@@ -59,7 +60,26 @@ const PosScreen: React.FC = () => {
     setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
   };
 
-  const filteredProducts = sampleProducts.filter(product =>
+  const handleSale = (items: CartItem[]) => {
+    const updatedProducts = products.map(product => {
+      const soldItem = items.find(item => item.id === product.id);
+      if (soldItem) {
+        return {
+          ...product,
+          stock: product.stock - soldItem.quantity
+        };
+      }
+      return product;
+    });
+    setProducts(updatedProducts);
+    // Limpiar carrito
+    setCartItems([]);
+  
+    // Opcional: mostrar mensaje de éxito
+    alert('Venta realizada con éxito');
+  };
+
+  const filteredProducts = products.filter(product =>
     (!selectedCategory || product.categoryId === selectedCategory) &&
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -77,7 +97,7 @@ const PosScreen: React.FC = () => {
           onSelectCategory={setSelectedCategory}
         />
         <ProductGrid 
-          products={filteredProducts}
+          products={filteredProducts.filter(p => p.stock > 0)}
           onProductPress={handleProductPress}
         />
       </View>
@@ -86,6 +106,7 @@ const PosScreen: React.FC = () => {
           items={cartItems}
           onUpdateQuantity={handleUpdateQuantity}
           onRemoveItem={handleRemoveItem}
+          onSale={handleSale}
         />
       </View>
     </View>

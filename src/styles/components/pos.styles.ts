@@ -29,6 +29,15 @@ export const productGridStyles = StyleSheet.create({
     color: colors.text.secondary,
     marginTop: spacing.xs,
   },
+  productCardDisabled: {
+    opacity: 0.6,
+  },
+  outOfStock: {
+    ...typography.caption,
+    color: colors.error,
+    marginTop: spacing.xs,
+    fontWeight: '600',
+  }
 });
 
 export const cartStyles = StyleSheet.create({
@@ -223,5 +232,10 @@ export const posScreenStyles = StyleSheet.create({
       ...typography.body1,
       fontWeight: '600',
       color: colors.text.primary,
-    }
+    },
+    modalText: {
+        ...typography.body1,
+        textAlign: 'center',
+        marginBottom: spacing.md,
+      }
   });

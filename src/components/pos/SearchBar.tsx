@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TextInput, TouchableOpacity } from 'react-native';
 import { Search } from 'lucide-react-native';
-import { cartStyles as styles } from '../../styles/components/pos.styles';
+import { searchStyles as styles } from '../../styles/components/pos.styles';
 
 interface SearchBarProps {
  value: string;

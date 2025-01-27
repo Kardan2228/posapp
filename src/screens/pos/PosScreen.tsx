@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import SearchBar from '../../components/pos/SearchBar';
 import CategoryTabs from '../../components/pos/CategoryTabs';
 import ProductGrid from '../../components/pos/ProductGrid';
 import Cart from '../../components/pos/Cart';
 import { Product, CartItem, Category } from '../../types';
-import { posScreenStyles as styles } from '../../styles/components/pos.styles';
+import { posScreenStyles as styles, searchStyles } from '../../styles/components/pos.styles';
 import OutOfStockModal from '../../components/pos/OutOfStockModal';
+import { Search } from 'lucide-react-native';
+import BarcodeScanner from '../../components/pos/BarcodeScanner';
 
 // Datos de ejemplo
-
 const sampleCategories: Category[] = [
     { id: 'bebidas', name: 'Bebidas' },
     { id: 'snacks', name: 'Snacks' },
@@ -18,10 +19,10 @@ const sampleCategories: Category[] = [
 ];
 
 const sampleProducts: Product[] = [
-    { id: '1', name: 'Coca Cola 600ml', price: 18, stock: 24, categoryId: 'bebidas' },
-    { id: '2', name: 'Sabritas', price: 15, stock: 15, categoryId: 'snacks' },
-    { id: '3', name: 'Pan Bimbo', price: 45, stock: 8, categoryId: 'pan' },
-    { id: '4', name: 'Leche 1L', price: 26, stock: 12, categoryId: 'lacteos' },
+    { id: '1', name: 'Coca Cola 600ml', price: 18, stock: 24, categoryId: 'bebidas', barcode: '7501055300556' },
+    { id: '2', name: 'Sabritas', price: 15, stock: 15, categoryId: 'snacks', barcode: '7501011123456' },
+    { id: '3', name: 'Pan Bimbo', price: 45, stock: 8, categoryId: 'pan', barcode: '7501030428809' },
+    { id: '4', name: 'Leche 1L', price: 26, stock: 12, categoryId: 'lacteos', barcode: '7501055384655' }
 ];
 
 const PosScreen: React.FC = () => {
@@ -29,9 +30,16 @@ const PosScreen: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [products, setProducts] = useState(sampleProducts);
-
     const [showOutOfStock, setShowOutOfStock] = useState(false);
     const [outOfStockProduct, setOutOfStockProduct] = useState('');
+    const [showScanner, setShowScanner] = useState(false);
+
+    const handleScan = (barcode: string) => {
+        const product = products.find(p => p.barcode === barcode);
+        if (product) {
+            handleProductPress(product);
+        }
+    };
 
     const handleProductPress = (product: Product) => {
         const currentInCart = cartItems.find(item => item.id === product.id)?.quantity || 0;
@@ -84,10 +92,7 @@ const PosScreen: React.FC = () => {
             return product;
         });
         setProducts(updatedProducts);
-        // Limpiar carrito
         setCartItems([]);
-
-        // Opcional: mostrar mensaje de éxito
         alert('Venta realizada con éxito');
     };
 
@@ -99,10 +104,18 @@ const PosScreen: React.FC = () => {
     return (
         <View style={styles.container}>
             <View style={styles.productsSection}>
-                <SearchBar
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                />
+                <View style={searchStyles.searchContainer}>
+                    <SearchBar
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                    />
+                    <TouchableOpacity
+                        style={searchStyles.scanButton}
+                        onPress={() => setShowScanner(true)}
+                    >
+                        <Search size={24} />
+                    </TouchableOpacity>
+                </View>
                 <CategoryTabs
                     categories={sampleCategories}
                     selectedCategory={selectedCategory}
@@ -126,6 +139,11 @@ const PosScreen: React.FC = () => {
                 isVisible={showOutOfStock}
                 onClose={() => setShowOutOfStock(false)}
                 product={outOfStockProduct}
+            />
+            <BarcodeScanner
+                isVisible={showScanner}
+                onClose={() => setShowScanner(false)}
+                onScan={handleScan}
             />
         </View>
     );

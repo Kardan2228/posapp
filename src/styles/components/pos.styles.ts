@@ -1,233 +1,121 @@
 import { StyleSheet } from 'react-native';
-import { colors, spacing, typography, shadows } from '../system';
+import theme from '../theme';
 
-export const productGridStyles = StyleSheet.create({
-    grid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        padding: spacing.md,
-    },
-    productCard: {
-        width: '30%',
-        margin: '1.66%',
-        padding: spacing.md,
-        backgroundColor: colors.background.paper,
-        borderRadius: spacing.sm,
-        ...shadows.small,
-    },
-    productName: {
-        ...typography.body1,
-        color: colors.text.primary,
-    },
-    productPrice: {
-        ...typography.h2,
-        color: colors.primary.main,
-        marginTop: spacing.xs,
-    },
-    productStock: {
-        ...typography.caption,
-        color: colors.text.secondary,
-        marginTop: spacing.xs,
-    },
-    productCardDisabled: {
-        opacity: 0.6,
-    },
-    outOfStock: {
-        ...typography.caption,
-        color: colors.error,
-        marginTop: spacing.xs,
-        fontWeight: '600',
-    }
-});
-
-export const cartStyles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.background.paper,
-    },
-    title: {
-        ...typography.h2,
-        padding: spacing.md,
-    },
-    itemList: {
-        flex: 1,
-    },
-    cartItem: {
-        flexDirection: 'row',
-        padding: spacing.md,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.background.default,
-        alignItems: 'center',
-    },
-    itemInfo: {
-        flex: 1,
-    },
-    itemName: {
-        ...typography.body1,
-        fontWeight: '500',
-    },
-    itemSubtext: {
-        ...typography.body2,
-        color: colors.text.secondary,
-        marginTop: spacing.xs,
-    },
-    itemTotal: {
-        ...typography.body2,
-        color: colors.primary.main,
-        fontWeight: '600',
-        marginTop: spacing.xs,
-    },
-    quantityControls: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    quantityButton: {
-        padding: spacing.sm,
-        backgroundColor: colors.background.default,
-        borderRadius: spacing.xs,
-    },
-    quantity: {
-        paddingHorizontal: spacing.md,
-        ...typography.body1,
-    },
-    footer: {
-        padding: spacing.md,
-        borderTopWidth: 1,
-        borderTopColor: colors.background.default,
-    },
-    total: {
-        ...typography.h1,
-        marginBottom: spacing.md,
-    },
-    checkoutButton: {
-        backgroundColor: colors.primary.main,
-        padding: spacing.md,
-        borderRadius: spacing.sm,
-        alignItems: 'center',
-    },
-    checkoutButtonText: {
-        color: colors.background.paper,
-        ...typography.h2,
-    }
-});
-export const posScreenStyles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'row',
-        backgroundColor: colors.background.default,
-    },
-    productsSection: {
-        flex: 2,
-    },
-    cartSection: {
-        flex: 1,
-    },
-});
-
-export const searchStyles = StyleSheet.create({
-    searchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        padding: spacing.sm,
-        backgroundColor: colors.background.paper,
-    },
-    searchWrapper: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: colors.background.default,
-        borderRadius: spacing.sm,
-        paddingHorizontal: spacing.sm,
-    },
-    searchIcon: {
-        marginRight: spacing.sm,
-    },
-    searchInput: {
-        flex: 1,
-        padding: spacing.sm,
-        fontSize: 16,
-    },
-    categoryContainer: {
-        backgroundColor: colors.background.paper,
-        paddingHorizontal: spacing.sm,
-    },
-    categoryTab: {
-        paddingHorizontal: spacing.md,
-        paddingVertical: spacing.sm,
-        marginRight: spacing.sm,
-        borderBottomWidth: 2,
-        borderBottomColor: 'transparent',
-    },
-    categoryTabSelected: {
-        borderBottomColor: colors.primary.main,
-    },
-    categoryText: {
-        ...typography.body1,
-        color: colors.text.secondary,
-        fontWeight: '500',
-    },
-    scanButton: {
-        marginLeft: spacing.sm,
-        padding: spacing.sm,
-        borderRadius: spacing.sm,
-        backgroundColor: colors.background.paper,
-    },
-});
-
-export const modalStyles = StyleSheet.create({
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalContent: {
-        backgroundColor: colors.background.paper,
-        borderRadius: spacing.md,
-        padding: spacing.lg,
-        width: '80%',
-        maxWidth: 400,
-    },
-    modalTitle: {
-        ...typography.h2,
-        textAlign: 'center',
-        marginBottom: spacing.md,
-    },
-    modalTotal: {
-        ...typography.h1,
-        textAlign: 'center',
-        color: colors.primary.main,
-        marginBottom: spacing.lg,
-    },
-    modalButtons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        gap: spacing.md,
-    },
-    modalButton: {
-        flex: 1,
-        padding: spacing.md,
-        borderRadius: spacing.sm,
-        alignItems: 'center',
-    },
-    modalButtonCancel: {
-        backgroundColor: colors.background.default,
-    },
-    modalButtonConfirm: {
-        backgroundColor: colors.primary.main,
-    },
-    modalButtonText: {
-        ...typography.body1,
-        fontWeight: '600',
-        color: colors.text.primary,
-    },
-    modalText: {
-        ...typography.body1,
-        textAlign: 'center',
-        marginBottom: spacing.md,
-    },
-    camera: {
-        width: '100%',
-        height: 300,
-        marginBottom: spacing.md,
-    }
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+    padding: 16,
+    paddingTop: 24,
+  },
+  header: {
+    backgroundColor: theme.colors.primary,
+    padding: 16,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    marginBottom: 16, // Margen inferior para separar el header del input
+  },
+  headerText: {
+    color: theme.colors.surface,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  card: {
+    backgroundColor: theme.colors.surface,
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: theme.colors.placeholder,
+  },
+  productImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 5,
+    marginRight: 16,
+    backgroundColor: theme.colors.placeholder,
+  },
+  productDetails: {
+    flex: 1,
+  },
+  textPrimary: {
+    color: theme.colors.text,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  textSecondary: {
+    color: theme.colors.placeholder,
+    fontSize: 14,
+  },
+  quantityControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  quantityButton: {
+    backgroundColor: theme.colors.primary,
+    borderRadius: 5,
+    padding: 8,
+    marginHorizontal: 8,
+  },
+  quantityButtonText: {
+    color: theme.colors.surface,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  quantityInput: {
+    width: 60, // Aumentamos el ancho del input
+    height: 35, // Ajustamos la altura para más espacio
+    textAlign: 'center',
+    borderColor: theme.colors.placeholder,
+    borderWidth: 1,
+    borderRadius: 5,
+    fontSize: 12, // Reducimos el tamaño de fuente
+    paddingVertical: 4, // Reducimos el padding interno
+  },
+  addButton: {
+    backgroundColor: theme.colors.accent,
+    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addButtonText: {
+    color: theme.colors.surface,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  cartSummary: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: theme.colors.surface,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    alignItems: 'center',
+  },
+  checkoutButton: {
+    backgroundColor: theme.colors.accent,
+    borderRadius: 5,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginTop: 8,
+    alignItems: 'center',
+  },
+  checkoutButtonText: {
+    color: theme.colors.surface,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });

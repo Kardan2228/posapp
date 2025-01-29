@@ -1,30 +1,13 @@
 import React from 'react';
-import { View, TextInput, TouchableOpacity } from 'react-native';
-import { Search } from 'lucide-react-native';
-import { searchStyles as styles } from '../../styles/components/pos.styles';
+import { TextInput } from 'react-native-paper';
 
-interface SearchBarProps {
- value: string;
- onChangeText: (text: string) => void;
- onSubmit?: () => void;
+export default function SearchBar({ placeholder, onChangeText }: any) {
+  return (
+    <TextInput
+      mode="outlined"
+      placeholder={placeholder}
+      onChangeText={onChangeText}
+      style={{ marginBottom: 16 }}
+    />
+  );
 }
-
-const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, onSubmit }) => {
- return (
-   <View style={styles.searchContainer}>
-     <View style={styles.searchWrapper}>
-       <Search size={20} color="#666" style={styles.searchIcon} />
-       <TextInput
-         style={styles.searchInput}
-         value={value}
-         onChangeText={onChangeText}
-         placeholder="Buscar productos..."
-         returnKeyType="search"
-         onSubmitEditing={onSubmit}
-       />
-     </View>
-   </View>
- );
-};
-
-export default SearchBar;

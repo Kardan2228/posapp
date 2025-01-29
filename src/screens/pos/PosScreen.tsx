@@ -1,152 +1,157 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
+import { styles } from '../../styles/components/pos.styles';
 import SearchBar from '../../components/pos/SearchBar';
-import CategoryTabs from '../../components/pos/CategoryTabs';
-import ProductGrid from '../../components/pos/ProductGrid';
-import Cart from '../../components/pos/Cart';
-import { Product, CartItem, Category } from '../../types';
-import { posScreenStyles as styles, searchStyles } from '../../styles/components/pos.styles';
-import OutOfStockModal from '../../components/pos/OutOfStockModal';
-import { Search } from 'lucide-react-native';
-import BarcodeScanner from '../../components/pos/BarcodeScanner';
+import { useCart } from '../../context/CartContext';
 
-// Datos de ejemplo
-const sampleCategories: Category[] = [
-    { id: 'bebidas', name: 'Bebidas' },
-    { id: 'snacks', name: 'Snacks' },
-    { id: 'pan', name: 'Panadería' },
-    { id: 'lacteos', name: 'Lácteos' },
-];
-
-const sampleProducts: Product[] = [
-    { id: '1', name: 'Coca Cola 600ml', price: 18, stock: 24, categoryId: 'bebidas', barcode: '7501055300556' },
-    { id: '2', name: 'Sabritas', price: 15, stock: 15, categoryId: 'snacks', barcode: '7501011123456' },
-    { id: '3', name: 'Pan Bimbo', price: 45, stock: 8, categoryId: 'pan', barcode: '7501030428809' },
-    { id: '4', name: 'Leche 1L', price: 26, stock: 12, categoryId: 'lacteos', barcode: '7501055384655' }
-];
-
-const PosScreen: React.FC = () => {
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-    const [products, setProducts] = useState(sampleProducts);
-    const [showOutOfStock, setShowOutOfStock] = useState(false);
-    const [outOfStockProduct, setOutOfStockProduct] = useState('');
-    const [showScanner, setShowScanner] = useState(false);
-
-    const handleScan = (barcode: string) => {
-        const product = products.find(p => p.barcode === barcode);
-        if (product) {
-            handleProductPress(product);
-        }
-    };
-
-    const handleProductPress = (product: Product) => {
-        const currentInCart = cartItems.find(item => item.id === product.id)?.quantity || 0;
-
-        if (currentInCart + 1 > product.stock) {
-            setOutOfStockProduct(product.name);
-            setShowOutOfStock(true);
-            return;
-        }
-
-        setCartItems(prevItems => {
-            const existingItem = prevItems.find(item => item.id === product.id);
-            if (existingItem) {
-                return prevItems.map(item =>
-                    item.id === product.id
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
-            }
-            return [...prevItems, { ...product, quantity: 1 }];
-        });
-    };
-
-    const handleUpdateQuantity = (item: CartItem, change: number) => {
-        setCartItems(prevItems => {
-            if (item.quantity + change <= 0) {
-                return prevItems.filter(i => i.id !== item.id);
-            }
-            return prevItems.map(i =>
-                i.id === item.id
-                    ? { ...i, quantity: i.quantity + change }
-                    : i
-            );
-        });
-    };
-
-    const handleRemoveItem = (itemId: string) => {
-        setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
-    };
-
-    const handleSale = (items: CartItem[]) => {
-        const updatedProducts = products.map(product => {
-            const soldItem = items.find(item => item.id === product.id);
-            if (soldItem) {
-                return {
-                    ...product,
-                    stock: product.stock - soldItem.quantity
-                };
-            }
-            return product;
-        });
-        setProducts(updatedProducts);
-        setCartItems([]);
-        alert('Venta realizada con éxito');
-    };
-
-    const filteredProducts = products.filter(product =>
-        (!selectedCategory || product.categoryId === selectedCategory) &&
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    return (
-        <View style={styles.container}>
-            <View style={styles.productsSection}>
-                <View style={searchStyles.searchContainer}>
-                    <SearchBar
-                        value={searchQuery}
-                        onChangeText={setSearchQuery}
-                    />
-                    <TouchableOpacity
-                        style={searchStyles.scanButton}
-                        onPress={() => setShowScanner(true)}
-                    >
-                        <Search size={24} />
-                    </TouchableOpacity>
-                </View>
-                <CategoryTabs
-                    categories={sampleCategories}
-                    selectedCategory={selectedCategory}
-                    onSelectCategory={setSelectedCategory}
-                />
-                <ProductGrid
-                    products={filteredProducts}
-                    onProductPress={handleProductPress}
-                />
-            </View>
-            <View style={styles.cartSection}>
-                <Cart
-                    items={cartItems}
-                    products={products}
-                    onUpdateQuantity={handleUpdateQuantity}
-                    onRemoveItem={handleRemoveItem}
-                    onSale={handleSale}
-                />
-            </View>
-            <OutOfStockModal
-                isVisible={showOutOfStock}
-                onClose={() => setShowOutOfStock(false)}
-                product={outOfStockProduct}
-            />
-            <BarcodeScanner
-                isVisible={showScanner}
-                onClose={() => setShowScanner(false)}
-                onScan={handleScan}
-            />
-        </View>
-    );
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+  quantity?: number;
+  image?: string;
 };
 
-export default PosScreen;
+const sampleProducts: Product[] = [
+  { id: 1, name: 'Coca Cola 600ml', price: 18, stock: 10 },
+  { id: 2, name: 'Sabritas 50g', price: 15, stock: 5 },
+  { id: 3, name: 'Leche 1L', price: 26, stock: 8 },
+];
+
+export default function PosScreen() {
+  const [search, setSearch] = useState('');
+  const [products] = useState<Product[]>(sampleProducts);
+  const [selectedQuantities, setSelectedQuantities] = useState<Record<number, string>>({});
+  const { cart, total, addToCart } = useCart();
+
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+  // Función para actualizar la cantidad con validación de stock y alerta
+  const updateSelectedQuantity = (productId: number, value: string, stock: number) => {
+    if (value === '') {
+      setSelectedQuantities((prev) => ({
+        ...prev,
+        [productId]: '',
+      }));
+      return;
+    }
+
+    const numericValue = parseInt(value, 10);
+
+    if (isNaN(numericValue) || numericValue < 1) {
+      return;
+    }
+
+    if (numericValue > stock) {
+      Alert.alert("Stock insuficiente", `Solo hay ${stock} unidades disponibles.`);
+      return;
+    }
+
+    setSelectedQuantities((prev) => ({
+      ...prev,
+      [productId]: numericValue.toString(),
+    }));
+  };
+
+  // Función que se ejecuta cuando el usuario deja el input vacío
+  const handleBlur = (productId: number) => {
+    setSelectedQuantities((prev) => ({
+      ...prev,
+      [productId]: prev[productId] === '' ? '1' : prev[productId],
+    }));
+  };
+
+  // Agregar productos al carrito con la cantidad seleccionada
+  const handleAddToCart = (product: Product) => {
+    const selectedQuantity = parseInt(selectedQuantities[product.id] || '1', 10);
+    addToCart(product, selectedQuantity);
+    setSelectedQuantities((prev) => ({
+      ...prev,
+      [product.id]: '1',
+    }));
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerText}>POSApp</Text>
+        <Text style={styles.headerText}>Comercio XYZ</Text>
+      </View>
+
+      {/* Barra de búsqueda */}
+      <SearchBar placeholder="Buscar productos..." onChangeText={(text: string) => setSearch(text)} />
+
+      {/* Lista de productos */}
+      <FlatList
+        data={filteredProducts}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => {
+          const selectedQuantity = selectedQuantities[item.id] ?? '1';
+          const numericQuantity = parseInt(selectedQuantity, 10);
+
+          return (
+            <View style={styles.card}>
+              {item.image && <Image source={{ uri: item.image }} style={styles.productImage} />}
+              <View style={styles.productDetails}>
+                <Text style={styles.textPrimary}>{item.name}</Text>
+                <Text style={styles.textSecondary}>Precio: ${item.price}</Text>
+                <Text style={styles.textSecondary}>Stock: {item.stock}</Text>
+
+                {/* Controles de cantidad */}
+                <View style={styles.quantityControls}>
+                  <TouchableOpacity
+                    style={styles.quantityButton}
+                    onPress={() => {
+                      if (numericQuantity > 1) {
+                        updateSelectedQuantity(item.id, (numericQuantity - 1).toString(), item.stock);
+                      }
+                    }}
+                  >
+                    <Text style={styles.quantityButtonText}>-</Text>
+                  </TouchableOpacity>
+
+                  <TextInput
+                    style={styles.quantityInput}
+                    value={selectedQuantity}
+                    keyboardType="numeric"
+                    onChangeText={(text) => updateSelectedQuantity(item.id, text, item.stock)}
+                    onBlur={() => handleBlur(item.id)}
+                  />
+
+                  <TouchableOpacity
+                    style={styles.quantityButton}
+                    onPress={() => {
+                      if (numericQuantity < item.stock) {
+                        updateSelectedQuantity(item.id, (numericQuantity + 1).toString(), item.stock);
+                      } else {
+                        Alert.alert("Stock insuficiente", `Solo hay ${item.stock} unidades disponibles.`);
+                      }
+                    }}
+                  >
+                    <Text style={styles.quantityButtonText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <TouchableOpacity style={styles.addButton} onPress={() => handleAddToCart(item)}>
+                <Text style={styles.addButtonText}>Agregar</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        }}
+        ListFooterComponent={
+          <View style={styles.cartSummary}>
+            <Text style={styles.textPrimary}>Total: ${total}</Text>
+            <TouchableOpacity style={styles.checkoutButton}>
+              <Text style={styles.checkoutButtonText}>Cobrar</Text>
+            </TouchableOpacity>
+          </View>
+        }
+      />
+    </View>
+  );
+}

@@ -1,9 +1,19 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, TextInput, Image, Alert } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  TextInput,
+  Image,
+  Alert,
+  Animated,
+} from 'react-native';
 import { styles } from '../../styles/components/pos.styles';
 import SearchBar from '../../components/pos/SearchBar';
 import { useCart } from '../../context/CartContext';
 
+// Definimos el tipo del producto con imagen opcional
 type Product = {
   id: number;
   name: string;
@@ -13,74 +23,67 @@ type Product = {
   image?: string;
 };
 
+// Datos de productos de ejemplo
 const sampleProducts: Product[] = [
-  { id: 1, name: 'Coca Cola 600ml', price: 18, stock: 10 },
-  { id: 2, name: 'Sabritas 50g', price: 15, stock: 5 },
-  { id: 3, name: 'Leche 1L', price: 26, stock: 8 },
+  { id: 1, name: 'Coca Cola 600ml', price: 18, stock: 24, image: 'https://via.placeholder.com/100' },
+  { id: 2, name: 'Sabritas 50g', price: 15, stock: 10, image: 'https://via.placeholder.com/100' },
+  { id: 3, name: 'Leche 1L', price: 26, stock: 12, image: 'https://via.placeholder.com/100' },
 ];
 
 export default function PosScreen() {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<string>('');
   const [products] = useState<Product[]>(sampleProducts);
-  const [selectedQuantities, setSelectedQuantities] = useState<Record<number, string>>({});
-  const { cart, total, addToCart } = useCart();
+  const [selectedQuantities, setSelectedQuantities] = useState<Record<number, number>>({});
+  const { addToCart, total } = useCart();
+
+  // Animación del botón de agregar
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const animateButton = () => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, { toValue: 0.95, duration: 100, useNativeDriver: true }),
+      Animated.timing(scaleAnim, { toValue: 1, duration: 100, useNativeDriver: true }),
+    ]).start();
+  };
 
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  // Función para actualizar la cantidad con validación de stock y alerta
-  const updateSelectedQuantity = (productId: number, value: string, stock: number) => {
-    if (value === '') {
-      setSelectedQuantities((prev) => ({
-        ...prev,
-        [productId]: '',
-      }));
-      return;
+  // Manejo de cantidades asegurando que no sean mayores al stock
+  const updateSelectedQuantity = (productId: number, newQuantity: number, stock: number) => {
+    if (isNaN(newQuantity) || newQuantity < 1) {
+      newQuantity = 1;
     }
-
-    const numericValue = parseInt(value, 10);
-
-    if (isNaN(numericValue) || numericValue < 1) {
-      return;
-    }
-
-    if (numericValue > stock) {
-      Alert.alert("Stock insuficiente", `Solo hay ${stock} unidades disponibles.`);
+    if (newQuantity > stock) {
+      Alert.alert('Cantidad no disponible', `Solo hay ${stock} unidades en stock.`);
       return;
     }
 
     setSelectedQuantities((prev) => ({
       ...prev,
-      [productId]: numericValue.toString(),
-    }));
-  };
-
-  // Función que se ejecuta cuando el usuario deja el input vacío
-  const handleBlur = (productId: number) => {
-    setSelectedQuantities((prev) => ({
-      ...prev,
-      [productId]: prev[productId] === '' ? '1' : prev[productId],
+      [productId]: newQuantity,
     }));
   };
 
   // Agregar productos al carrito con la cantidad seleccionada
   const handleAddToCart = (product: Product) => {
-    const selectedQuantity = parseInt(selectedQuantities[product.id] || '1', 10);
+    const selectedQuantity = selectedQuantities[product.id] || 1;
     addToCart(product, selectedQuantity);
+    animateButton();
     setSelectedQuantities((prev) => ({
       ...prev,
-      [product.id]: '1',
+      [product.id]: 1,
     }));
   };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>POSApp</Text>
-        <Text style={styles.headerText}>Comercio XYZ</Text>
-      </View>
+      {/* Header animado */}
+      <Animated.View style={[styles.header, { transform: [{ scale: scaleAnim }] }]}>
+        <Text style={styles.headerText}>Punto de venta</Text>
+        <Text style={styles.headerSubText}>El Pumita abarrotero</Text>
+      </Animated.View>
 
       {/* Barra de búsqueda */}
       <SearchBar placeholder="Buscar productos..." onChangeText={(text: string) => setSearch(text)} />
@@ -90,12 +93,10 @@ export default function PosScreen() {
         data={filteredProducts}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => {
-          const selectedQuantity = selectedQuantities[item.id] ?? '1';
-          const numericQuantity = parseInt(selectedQuantity, 10);
+          const selectedQuantity = selectedQuantities[item.id] || 1;
 
           return (
-            <View style={styles.card}>
-              {item.image && <Image source={{ uri: item.image }} style={styles.productImage} />}
+            <Animated.View style={[styles.card, { transform: [{ scale: scaleAnim }] }]}>
               <View style={styles.productDetails}>
                 <Text style={styles.textPrimary}>{item.name}</Text>
                 <Text style={styles.textSecondary}>Precio: ${item.price}</Text>
@@ -105,42 +106,45 @@ export default function PosScreen() {
                 <View style={styles.quantityControls}>
                   <TouchableOpacity
                     style={styles.quantityButton}
-                    onPress={() => {
-                      if (numericQuantity > 1) {
-                        updateSelectedQuantity(item.id, (numericQuantity - 1).toString(), item.stock);
-                      }
-                    }}
+                    onPress={() => updateSelectedQuantity(item.id, selectedQuantity - 1, item.stock)}
                   >
                     <Text style={styles.quantityButtonText}>-</Text>
                   </TouchableOpacity>
 
                   <TextInput
                     style={styles.quantityInput}
-                    value={selectedQuantity}
+                    value={selectedQuantities[item.id]?.toString() || ''}
                     keyboardType="numeric"
-                    onChangeText={(text) => updateSelectedQuantity(item.id, text, item.stock)}
-                    onBlur={() => handleBlur(item.id)}
+                    onChangeText={(text) => {
+                      const numericValue = parseInt(text || '0', 10);
+                      updateSelectedQuantity(item.id, numericValue, item.stock);
+                    }}
+                    onBlur={() => {
+                      if (!selectedQuantities[item.id]) {
+                        setSelectedQuantities((prev) => ({
+                          ...prev,
+                          [item.id]: 1,
+                        }));
+                      }
+                    }}
                   />
 
                   <TouchableOpacity
                     style={styles.quantityButton}
-                    onPress={() => {
-                      if (numericQuantity < item.stock) {
-                        updateSelectedQuantity(item.id, (numericQuantity + 1).toString(), item.stock);
-                      } else {
-                        Alert.alert("Stock insuficiente", `Solo hay ${item.stock} unidades disponibles.`);
-                      }
-                    }}
+                    onPress={() => updateSelectedQuantity(item.id, selectedQuantity + 1, item.stock)}
                   >
                     <Text style={styles.quantityButtonText}>+</Text>
                   </TouchableOpacity>
                 </View>
               </View>
 
+              {/* Imagen del producto */}
+              {item.image && <Image source={{ uri: item.image }} style={styles.productImage} />}
+
               <TouchableOpacity style={styles.addButton} onPress={() => handleAddToCart(item)}>
                 <Text style={styles.addButtonText}>Agregar</Text>
               </TouchableOpacity>
-            </View>
+            </Animated.View>
           );
         }}
         ListFooterComponent={

@@ -32,7 +32,7 @@ function TabNavigator() {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="POS" component={PosScreen} />
+      <Tab.Screen name="POS" component={PosScreen} options={{ headerShown: false }}/>
       <Tab.Screen name="Inventario" component={InventoryScreen} />
       <Tab.Screen name="Reportes" component={ReportsScreen} />
     </Tab.Navigator>

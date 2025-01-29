@@ -21,6 +21,13 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  headerSubText: {
+    fontSize: 14,
+    color: '#ffffff',
+    fontWeight: '400',
+    textAlign: 'center',
+    marginTop: 2, // Ajuste de espaciado opcional
+  },
   card: {
     backgroundColor: theme.colors.surface,
     borderRadius: 10,

@@ -2,6 +2,13 @@
 
 # dependencies
 node_modules/
+.env
+*.log
+.expo/
+.expo-shared/
+.vscode/
+android/
+ios/
 
 # Expo
 .expo/

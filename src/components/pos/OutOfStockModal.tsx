@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity } from 'react-native';
-import { modalStyles } from '../../styles/components/pos.styles';
+import { modalStyles } from '../../styles/pos.styles';
 
 interface OutOfStockModalProps {
  isVisible: boolean;

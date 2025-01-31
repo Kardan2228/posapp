@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Product } from '../../types';
-import { productGridStyles } from '../../styles/components/pos.styles';
+import { productGridStyles } from '../../styles/pos.styles';
 
 interface ProductGridProps {
   products: Product[];

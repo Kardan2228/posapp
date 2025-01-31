@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity } from 'react-native';
-import { searchStyles as styles } from '../../styles/components/pos.styles';
-import { modalStyles } from '../../styles/components/pos.styles';
+import { searchStyles as styles } from '../../styles/pos.styles';
+import { modalStyles } from '../../styles/pos.styles';
 
 interface PaymentModalProps {
   isVisible: boolean;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { CartItem, Product } from '../../types';
-import { cartStyles as styles } from '../../styles/components/pos.styles';
+import { cartStyles as styles } from '../../styles/pos.styles';
 import PaymentModal from './PaymentModal';
 import OutOfStockModal from './OutOfStockModal';
 

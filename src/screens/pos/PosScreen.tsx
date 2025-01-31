@@ -9,7 +9,7 @@ import {
   Alert,
   Animated,
 } from 'react-native';
-import { styles } from '../../styles/components/pos.styles';
+import { styles } from '../../styles/pos.styles';
 import SearchBar from '../../components/pos/SearchBar';
 import { useCart } from '../../context/CartContext';
 

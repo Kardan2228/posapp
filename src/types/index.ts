@@ -1,19 +1,18 @@
-export interface Product {
+export interface Category {
     id: string;
     name: string;
-    price: number;
-    stock: number;
-    categoryId: string;
-    barcode?: string; // Agregar esta línea
   }
 
-export interface Product {
-    id: string;
+  export type Product = {
+    id: number;
     name: string;
     price: number;
     stock: number;
+    image: string;
+    expirationDate: string;
     categoryId: string;
-  }
+  };
+  
   
   export interface CartItem extends Product {
     quantity: number;

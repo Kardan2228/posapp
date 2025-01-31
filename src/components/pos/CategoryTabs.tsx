@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { searchStyles as styles } from '../../styles/components/pos.styles';
+import { searchStyles as styles } from '../../styles/pos.styles';
 import { Category } from '../../types';
 
 interface CategoryTabsProps {

@@ -2,7 +2,7 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, Platform } from 'react-native';
 import * as ExpoBarCodeScanner from 'expo-barcode-scanner';
-import { modalStyles } from '../../styles/components/pos.styles';
+import { modalStyles } from '../../styles/pos.styles';
 
 interface BarcodeScannerProps {
   isVisible: boolean;
